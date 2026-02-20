@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Second Brain — AI Productivity Agent</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ══ TOP BAR ══════════════════════════════════════════ -->
+  <header class="topbar">
+    <div class="topbar-brand">Second<em>Brain</em></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-meta">
+      <div class="mood-chip">
+        <span class="mood-dot"></span>
+        Mood: <strong id="tb-mood">—</strong>
+      </div>
+      <div class="topbar-streak" id="tb-streak">— Day Streak</div>
+    </div>
+  </header>
+
+  <!-- ══ SIDEBAR NAV ═════════════════════════════════════ -->
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Workspace</div>
+    <div class="nav-item active" data-page="dashboard">
+      <span class="nav-icon">&#9632;</span> Dashboard
+    </div>
+    <div class="nav-item" data-page="goals">
+      <span class="nav-icon">&#9670;</span> Goals
+    </div>
+    <div class="nav-item" data-page="tasks">
+      <span class="nav-icon">&#10003;</span> Tasks
+    </div>
+    <div class="nav-section-label">Insights</div>
+    <div class="nav-item" data-page="analytics">
+      <span class="nav-icon">&#9650;</span> Analytics
+    </div>
+    <div class="nav-section-label">AI</div>
+    <div class="nav-item" data-page="chat">
+      <span class="nav-icon">&#9654;</span> Agent Chat
+    </div>
+  </nav>
+
+  <!-- ══ MAIN CONTENT ════════════════════════════════════ -->
+  <main class="main-content">
+
+    <!-- ── PAGE: DASHBOARD ────────────────────────────── -->
+    <section id="page-dashboard" class="page-section">
+      <div class="page-header">
+        <div class="page-title">Dashboard</div>
+        <div class="page-subtitle">Your productivity at a glance</div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Weekly Hours</div>
+          <div class="stat-value" id="stat-week-hours">—</div>
+          <div class="stat-sub">Study hours this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Current Streak</div>
+          <div class="stat-value" id="stat-streak">—</div>
+          <div class="stat-sub">Consecutive study days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Goals</div>
+          <div class="stat-value" id="stat-active">—</div>
+          <div class="stat-sub">Goals in progress</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Completed</div>
+          <div class="stat-value" id="stat-completed">—</div>
+          <div class="stat-sub">Goals finished</div>
+        </div>
+      </div>
+
+      <div class="dash-grid section-gap">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Active Goals</span>
+            <button class="btn btn-ghost btn-sm" onclick="navigate('goals')">Manage</button>
+          </div>
+          <div class="card-body">
+            <div class="goal-summary-list" id="dash-goal-list">
+              <div class="text-muted">Loading…</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Study Hours — Last 7 Days</span>
+          </div>
+          <div class="card-body">
+            <div class="bar-chart" id="bar-chart"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Log hours quick form -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Quick Actions</span>
+        </div>
+        <div class="card-body" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+          <div class="form-group" style="margin:0;flex:1;min-width:140px">
+            <label class="form-label">Log Study Hours</label>
+            <input type="number" id="quick-hours" class="form-input" placeholder="e.g. 2.5" step="0.5" min="0.5" max="24"/>
+          </div>
+          <button class="btn btn-accent" onclick="quickLogHours()">Log Hours</button>
+          <div class="form-group" style="margin:0;flex:1;min-width:140px">
+            <label class="form-label">Update Mood</label>
+            <select id="quick-mood" class="form-select">
+              <option value="motivated">Motivated</option>
+              <option value="focused">Focused</option>
+              <option value="tired">Tired</option>
+              <option value="stressed">Stressed</option>
+              <option value="happy">Happy</option>
+              <option value="anxious">Anxious</option>
+              <option value="energetic">Energetic</option>
+            </select>
+          </div>
+          <button class="btn btn-ghost" onclick="quickMood()">Set Mood</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PAGE: GOALS ─────────────────────────────────── -->
+    <section id="page-goals" class="page-section hidden">
+      <div class="page-header">
+        <div class="page-title">Goals</div>
+        <div class="page-subtitle">Define, track, and manage your objectives</div>
+      </div>
+
+      <div class="goals-page-grid">
+        <!-- Goals table -->
+        <div class="card goals-table-wrap">
+          <div class="card-header">
+            <span class="card-title">All Goals</span>
+            <button class="btn btn-primary btn-sm" onclick="openAddGoalModal()">+ Add Goal</button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Goal</th>
+                <th>Priority</th>
+                <th>Deadline</th>
+                <th>Progress</th>
+                <th>Days Left</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="goals-tbody">
+              <tr><td colspan="6" class="text-muted" style="padding:20px">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Edit panel (shown when editing) -->
+        <div class="card form-panel" id="goal-edit-panel" style="display:none">
+          <div class="card-header">
+            <span class="card-title" id="edit-panel-title">Edit Goal</span>
+            <button class="btn btn-ghost btn-sm btn-icon" onclick="closeEditPanel()">&#x2715;</button>
+          </div>
+          <div class="card-body">
+            <input type="hidden" id="edit-goal-id"/>
+            <div class="form-group">
+              <label class="form-label">Goal Title</label>
+              <input type="text" id="edit-goal-title" class="form-input" placeholder="e.g. Crack GATE Exam"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Deadline</label>
+              <input type="date" id="edit-goal-deadline" class="form-input"/>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-primary" style="flex:1" onclick="saveGoalEdit()">Save Changes</button>
+              <button class="btn btn-ghost" onclick="closeEditPanel()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PAGE: TASKS ─────────────────────────────────── -->
+    <section id="page-tasks" class="page-section hidden">
+      <div class="page-header">
+        <div class="page-title">Tasks</div>
+        <div class="page-subtitle">Manage tasks per goal — check off, edit, or delete</div>
+      </div>
+
+      <div class="tasks-layout">
+        <!-- Goal selector -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Select Goal</span></div>
+          <div class="card-body">
+            <div class="goal-selector-list" id="goal-selector"></div>
+          </div>
+        </div>
+
+        <!-- Tasks for selected goal -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title" id="tasks-goal-title">Select a goal</span>
+            <button class="btn btn-primary btn-sm" id="add-task-btn" onclick="showAddTask()" style="display:none">+ Add Task</button>
+          </div>
+          <div class="card-body">
+            <!-- Add task inline form (hidden) -->
+            <div id="add-task-form" style="display:none;margin-bottom:14px;display:none">
+              <div style="display:flex;gap:8px">
+                <input type="text" id="new-task-input" class="form-input" placeholder="Task description…" style="flex:1"/>
+                <button class="btn btn-accent btn-sm" onclick="submitAddTask()">Add</button>
+                <button class="btn btn-ghost btn-sm" onclick="hideAddTask()">Cancel</button>
+              </div>
+            </div>
+            <div class="task-list" id="task-list">
+              <div class="text-muted">Select a goal to see its tasks.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PAGE: ANALYTICS ─────────────────────────────── -->
+    <section id="page-analytics" class="page-section hidden">
+      <div class="page-header">
+        <div class="page-title">Analytics</div>
+        <div class="page-subtitle">Deep dive into your study performance</div>
+      </div>
+
+      <div class="analytics-grid">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Study Hours — Last 7 Days</span></div>
+          <div class="card-body">
+            <div class="bar-chart" id="analytics-bar-chart" style="height:160px"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">Summary</span></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+            <div>
+              <div class="stat-label">Total Hours (All Time)</div>
+              <div style="font-family:'Playfair Display',serif;font-size:1.8rem;letter-spacing:-0.02em" id="a-total-hours">—</div>
+            </div>
+            <hr class="divider"/>
+            <div>
+              <div class="stat-label">Most Urgent Goal</div>
+              <div style="font-size:0.9rem;font-weight:700;color:var(--accent);margin-top:4px" id="a-most-urgent">—</div>
+            </div>
+            <div>
+              <div class="stat-label">Current Mood</div>
+              <div style="font-size:0.9rem;font-weight:700;text-transform:capitalize;margin-top:4px" id="a-mood">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card analytics-full">
+          <div class="card-header"><span class="card-title">Per-Goal Breakdown</span></div>
+          <div class="card-body">
+            <div id="analytics-goals-table"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PAGE: CHAT ──────────────────────────────────── -->
+    <section id="page-chat" class="page-section hidden">
+      <div class="page-header">
+        <div class="page-title">Agent Chat</div>
+        <div class="page-subtitle">Talk to your AI productivity agent — get plans, quizzes, and guidance</div>
+      </div>
+
+      <div class="chat-layout">
+        <div class="chat-window card" style="padding:0;border:none;box-shadow:none">
+          <div class="messages-area" id="messages-area">
+            <div class="typing-row hidden" id="typing-indicator">
+              <div class="msg-avatar">AI</div>
+              <div class="typing-dots"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+          <div class="chat-input-bar">
+            <textarea
+              id="chat-input"
+              class="chat-textarea"
+              rows="1"
+              placeholder="Ask anything — plan my week for ML, generate a quiz, what should I focus on…"
+            ></textarea>
+            <button id="chat-send" class="chat-send-btn" title="Send (Enter)">&#8593;</button>
+          </div>
+        </div>
+
+        <!-- Sidebar: quick prompts -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Quick Prompts</span></div>
+            <div class="card-body">
+              <div class="prompt-list">
+                <button class="prompt-btn" onclick="sendPrompt('What should I focus on today?')">What should I focus on today?</button>
+                <button class="prompt-btn" onclick="sendPrompt('Plan my study week for ML goal')">Plan study week for ML</button>
+                <button class="prompt-btn" onclick="sendPrompt('Generate a quiz for DSA goal')">Generate quiz for DSA</button>
+                <button class="prompt-btn" onclick="sendPrompt('Reflect on my week')">Weekly reflection</button>
+                <button class="prompt-btn" onclick="sendPrompt('I feel tired today')">I feel tired — adjust plan</button>
+                <button class="prompt-btn" onclick="sendPrompt('I feel motivated and want to study hard')">I feel motivated</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span class="card-title">Examples</span></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:6px">
+              <div class="text-muted" style="line-height:1.9">
+                "I studied 3 hours today"<br>
+                "Add task to ML: Revise SVM"<br>
+                "Plan week for DSA prep"<br>
+                "Generate quiz for ML exam"
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ══ MODAL: Add Goal ════════════════════════════════════ -->
+<div class="modal-overlay" id="add-goal-modal">
+  <div class="modal">
+    <div class="modal-title">Add New Goal</div>
+    <div class="form-group">
+      <label class="form-label">Goal Title</label>
+      <input type="text" id="modal-goal-title" class="form-input" placeholder="e.g. Crack GATE Exam"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Deadline</label>
+      <input type="date" id="modal-goal-deadline" class="form-input"/>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('add-goal-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitAddGoal()">Add Goal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Confirm Delete ══════════════════════════════ -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal">
+    <div class="modal-title" id="confirm-title">Confirm Action</div>
+    <p id="confirm-body" style="color:var(--ink-muted);font-size:0.875rem;line-height:1.6"></p>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('confirm-modal')">Cancel</button>
+      <button class="btn btn-danger" id="confirm-ok-btn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
