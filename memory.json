@@ -1,0 +1,94 @@
+{
+  "name": "Mourya",
+  "mood": "motivated",
+  "streak": 5,
+  "study_logs": [
+    {
+      "date": "2026-02-17",
+      "hours": 2.0
+    },
+    {
+      "date": "2026-02-18",
+      "hours": 3.0
+    },
+    {
+      "date": "2026-02-19",
+      "hours": 1.0
+    },
+    {
+      "date": "2026-02-20",
+      "hours": 4.0
+    }
+  ],
+  "goals": [
+    {
+      "id": 1,
+      "title": "Crack ML Exam",
+      "deadline": "2026-03-20",
+      "priority": "MEDIUM",
+      "status": "active",
+      "tasks": [
+        {
+          "id": 1,
+          "task": "Revise Linear Algebra",
+          "status": "completed"
+        },
+        {
+          "id": 2,
+          "task": "Practice ML MCQs",
+          "status": "completed"
+        },
+        {
+          "id": 3,
+          "task": "Study Neural Networks",
+          "status": "pending"
+        }
+      ],
+      "progress": 67
+    },
+    {
+      "id": 2,
+      "title": "DSA Interview Prep",
+      "deadline": "2026-04-10",
+      "priority": "LOW",
+      "status": "active",
+      "tasks": [
+        {
+          "id": 1,
+          "task": "Arrays and Strings",
+          "status": "completed"
+        },
+        {
+          "id": 2,
+          "task": "Trees and Graphs",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "task": "Dynamic Programming",
+          "status": "pending"
+        }
+      ],
+      "progress": 33
+    },
+    {
+      "id": 3,
+      "title": "sem exam",
+      "deadline": "2026-02-27",
+      "priority": "CRITICAL",
+      "status": "active",
+      "tasks": [],
+      "progress": 0
+    },
+    {
+      "id": 4,
+      "title": "kick naaz",
+      "deadline": "2026-02-28",
+      "priority": "HIGH",
+      "status": "active",
+      "tasks": [],
+      "progress": 0
+    }
+  ],
+  "notes": []
+}
